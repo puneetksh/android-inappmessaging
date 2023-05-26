@@ -10,6 +10,7 @@ internal data class ConfigQueryParamsBuilder(
     private val locale: String? = null,
     private val appVersion: String? = null,
     private val sdkVersion: String? = null,
+    private val rmcDeviceId: String,
 ) {
 
     private val platform = InAppMessagingConstants.ANDROID_PLATFORM_ENUM

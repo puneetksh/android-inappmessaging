@@ -83,6 +83,8 @@ internal interface HostAppInfoRepository {
      */
     fun registerActivity(activity: Activity?)
 
+    fun getRmcDeviceId(): String
+
     /**
      * Returns the current activity or screen to display campaign.
      */
@@ -155,5 +157,7 @@ internal interface HostAppInfoRepository {
         }
 
         override fun getRegisteredActivity() = this.activity?.get()
+
+        override fun getRmcDeviceId(): String = hostAppInfo?.rmcDeviceId.orEmpty()
     }
 }

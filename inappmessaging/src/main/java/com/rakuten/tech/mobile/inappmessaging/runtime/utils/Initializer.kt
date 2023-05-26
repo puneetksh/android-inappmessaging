@@ -95,12 +95,27 @@ internal object Initializer {
             packageName = getHostAppPackageName(context), deviceId = getDeviceId(context, sharedUtil),
             version = getHostAppVersion(context), subscriptionKey = subscriptionKey, locale = getLocale(context),
             configUrl = configUrl, isTooltipFeatureEnabled = enableTooltipFeature, context = context,
+            rmcDeviceId = getRmcDeviceId(context)
         )
 
         // Store hostAppInfo in repository.
         HostAppInfoRepository.instance().addHostInfo(hostAppInfo)
 
         initializePicassoInstance(context)
+    }
+
+    private fun getRmcDeviceId(context: Context): String {
+        val sharedPref = context.getSharedPreferences("${context.packageName}-RMC_CONFIG", Context.MODE_PRIVATE)
+        var id = sharedPref.getString("rmc_device_id", "")
+
+        if (id.isNullOrEmpty()) {
+            id = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+            if (id.isNullOrBlank() || id == "9774d56d682e549c") {
+                id = UUID.randomUUID().toString()
+            }
+            sharedPref.edit().putString("rmc_device_id", id).apply()
+        }
+        return id
     }
 
     /**

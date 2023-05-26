@@ -81,6 +81,7 @@ internal class ConfigWorker(
             locale = locale,
             appVersion = hostAppVersion,
             sdkVersion = sdkVersion,
+            rmcDeviceId = hostRepo.getRmcDeviceId()
         ).queryParams
         return RuntimeUtil.getRetrofit()
             .create(ConfigRetrofitService::class.java)

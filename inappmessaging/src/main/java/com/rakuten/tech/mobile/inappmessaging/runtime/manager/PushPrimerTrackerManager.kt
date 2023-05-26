@@ -14,6 +14,7 @@ internal object PushPrimerTrackerManager {
         val params: MutableMap<String, Any?> = HashMap()
         params[InAppMessagingConstants.RAT_EVENT_CAMP_ID] = campaignId
         params[InAppMessagingConstants.RAT_EVENT_SUBS_ID] = HostAppInfoRepository.instance().getSubscriptionKey()
+        params["cp"] = mapOf(InAppMessagingConstants.RAT_EVENT_RMC_DEVICE_ID to HostAppInfoRepository.instance().getRmcDeviceId())
         params[InAppMessagingConstants.RAT_EVENT_KEY_PERMISSION] = permission
 
         sendEvent(InAppMessagingConstants.RAT_EVENT_KEY_PRIMER, params)
