@@ -32,6 +32,7 @@ internal object Initializer {
 
     private const val TAG = "IAM_InitWorker"
     internal const val ID_KEY = "uuid_key"
+    internal const val DEVICE_ID_KEY = "rmc_device_id"
     private const val IMAGE_REQUEST_TIMEOUT_SECONDS = 20L
     private const val IMAGE_RESOURCE_TIMEOUT_SECONDS = 300L
     private const val CACHE_MAX_SIZE = 50L * 1024L * 1024L // 50 MiB
@@ -91,6 +92,7 @@ internal object Initializer {
         enableTooltipFeature: Boolean? = false,
         sharedUtil: PreferencesUtil = PreferencesUtil,
     ) {
+        initRmcDeviceId(context, sharedUtil)
         val hostAppInfo = HostAppInfo(
             packageName = getHostAppPackageName(context), deviceId = getDeviceId(context, sharedUtil),
             version = getHostAppVersion(context), subscriptionKey = subscriptionKey, locale = getLocale(context),
@@ -101,6 +103,24 @@ internal object Initializer {
         HostAppInfoRepository.instance().addHostInfo(hostAppInfo)
 
         initializePicassoInstance(context)
+    }
+
+    private fun initRmcDeviceId(context: Context, sharedUtil: PreferencesUtil) : String {
+        var deviceId = sharedUtil.getString(context, "rmc-data", DEVICE_ID_KEY, null)
+
+        if (deviceId == null) {
+            val androidId =
+                Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
+
+            deviceId = if (androidId.isNullOrBlank() || androidId == "9774d56d682e549c") {
+                // https://docs.pushlink.com/android-device-id-guide
+                getUuid(context, sharedUtil)
+            } else {
+                androidId
+            }
+            sharedUtil.putString(context, "rmc-data", DEVICE_ID_KEY, deviceId)
+        }
+        return deviceId
     }
 
     /**
